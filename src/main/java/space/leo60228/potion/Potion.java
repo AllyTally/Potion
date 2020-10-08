@@ -29,7 +29,7 @@ public class Potion extends JavaPlugin {
             Method addPotion = PotionBrewer.class.getDeclaredMethod("a", PotionRegistry.class, Item.class,
                     PotionRegistry.class);
             addPotion.setAccessible(true);
-            addPotion.invoke(null, Potions.WATER, cobble, Potions.LUCK);
+            addPotion.invoke(null, Potions.WATER, cobble, Potions.EMPTY);
         } catch (Exception e) {
             System.out.println(e);
             return;
