@@ -1,0 +1,4 @@
+name: Potion
+version: 1.0
+main: space.leo60228.potion.Potion
+api-version: 1.16
