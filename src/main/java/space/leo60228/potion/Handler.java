@@ -86,7 +86,8 @@ public class Handler implements Listener {
                 /*PersistentDataContainer container = inputMeta.getPersistentDataContainer();
                 NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotion");*/
                 for (PotionRecipe Recipe : Recipes) {
-                    if (input.getItemMeta() == Recipe.outputPotion.getItemMeta()) { // This is the result of a custom potion.
+                    if (input.equals(Recipe.outputPotion)) { // This is the result of a custom potion.
+                        System.out.println("handling custom potion");
                     //if (container.has(key, PersistentDataType.INTEGER)) {
                         customPotion = true;
                         if (ingredientType == Material.REDSTONE && !Recipe.canExtend) continue;
@@ -126,6 +127,12 @@ public class Handler implements Listener {
                 if (!customPotion) {
                     // This isn't a custom potion, so just let vanilla handle it.
                     System.out.println("letting vanilla handle");
+
+                    // ORIGINAL:
+                    /*
+                    for (int i = 0; i < 3; ++i) {
+                        this.items.set(i, PotionBrewer.d(itemstack, (ItemStack) this.items.get(i)));
+                    }*/
                     inv.setItem(
                         i,
                         CraftItemStack.asBukkitCopy(
