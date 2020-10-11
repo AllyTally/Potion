@@ -99,8 +99,7 @@ public class Handler implements Listener {
                 ItemMeta inputMeta = input.getItemMeta();
                 PersistentDataContainer container = inputMeta.getPersistentDataContainer();
                 NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotionId");
-                NamespacedKey key2 = new NamespacedKey(Potion.getInstance(), "upgraded");
-                NamespacedKey key3 = new NamespacedKey(Potion.getInstance(), "extended");
+                NamespacedKey key2 = new NamespacedKey(Potion.getInstance(), "modified");
                 for (PotionRecipe Recipe : Recipes) {
                     //if (input.equals(Recipe.outputPotion)) { // This is the result of a custom potion.
                     //    System.out.println("handling custom potion");
@@ -115,14 +114,13 @@ public class Handler implements Listener {
                             continue;
 
                         if (ingredientType == Material.REDSTONE) {
-                            if (!container.has(key3, PersistentDataType.INTEGER) || container.get(key3, PersistentDataType.INTEGER) == 0) {
+                            if (!container.has(key2, PersistentDataType.INTEGER) || container.get(key2, PersistentDataType.INTEGER) == 0) {
                                 ItemStack modifiedPotion = input.clone();
                                 PotionMeta outputMeta = (PotionMeta) modifiedPotion.getItemMeta();
                                 PotionMeta oldMeta = outputMeta.clone();
                                 if (outputMeta.hasCustomEffects()) {
                                     outputMeta.clearCustomEffects();
                                     for (PotionEffect effect : oldMeta.getCustomEffects()) {
-                                        System.out.println("extending effect");
                                         PotionEffect newEffect = new PotionEffect(effect.getType(), Recipe.extendedTime, effect.getAmplifier());
                                         outputMeta.addCustomEffect(newEffect, true);
                                     }
