@@ -2,6 +2,8 @@ package space.leo60228.potion;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +16,9 @@ import net.minecraft.server.v1_16_R2.Potions;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -34,7 +39,7 @@ public class Potion extends JavaPlugin {
         outputMeta.addCustomEffect(effect, true);
         outputMeta.setDisplayName(ChatColor.RESET + "Potion of Haste");
         outputPotion.setItemMeta(outputMeta);
-        PotionRecipe potion = new PotionRecipe("haste_potion", Material.DIAMOND, Potions.WATER, outputPotion);
+        PotionRecipe potion = new PotionRecipe("haste_potion", Material.DIAMOND, "water", outputPotion);
         potion.setSplashName("Splash Potion of Haste");
         potion.setLingeringName("Lingering Potion of Haste");
         Recipes.add(potion);
@@ -46,10 +51,25 @@ public class Potion extends JavaPlugin {
         outputMeta2.addCustomEffect(effect2, true);
         outputMeta2.setDisplayName(ChatColor.RESET + "Potion of SEX");
         outputPotion2.setItemMeta(outputMeta2);
-        PotionRecipe potion2 = new PotionRecipe("sex_potion", Material.SLIME_BALL, Potions.WATER, outputPotion2);
+        PotionRecipe potion2 = new PotionRecipe("sex_potion", Material.SLIME_BALL, "water", outputPotion2);
         potion2.setSplashName("Splash Potion of SEX");
         potion2.setLingeringName("Lingering Potion of SEX");
         Recipes.add(potion2);
+    }
+
+    /*public void loadRecipes() {
+        File file = new File(getDataFolder(), "potions.yml");
+        if (file.exists()) {
+            Configuration config = YamlConfiguration.loadConfiguration(file);
+            Recipes = (ArrayList<PotionRecipe>) config.getList("potions");
+        }
+    }*/
+
+    public void saveRecipes() throws IOException {
+        File file = new File(getDataFolder(), "potions.yml");
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("potions", Recipes);
+        config.save(file);
     }
 
     public void registerPotion(PotionRecipe Recipe) {
@@ -58,7 +78,7 @@ public class Potion extends JavaPlugin {
             Method addPotion = PotionBrewer.class.getDeclaredMethod("a", PotionRegistry.class, Item.class,
                     PotionRegistry.class);
             addPotion.setAccessible(true);
-            addPotion.invoke(null, Recipe.inputPotions, inputItem, Potions.EMPTY);
+            addPotion.invoke(null, PotionRegistry.a(Recipe.inputPotions), inputItem, Potions.EMPTY);
         } catch (Exception e) {
             System.out.println(e);
             return;
@@ -95,5 +115,20 @@ public class Potion extends JavaPlugin {
             registerPotion(Recipe);
         }
         getServer().getPluginManager().registerEvents(new Handler(), this);
+    }
+
+    @Override
+    public void onDisable() {
+        System.out.println("[Potion] attempting to save potions...");
+        try {
+            saveRecipes();
+            System.out.println("[Potion] done!");
+        } catch (Exception e) {
+            System.out.println("[Potion] failed to save potions!");
+            e.printStackTrace();
+            System.out.println(e);
+            return;
+        }
+
     }
 }

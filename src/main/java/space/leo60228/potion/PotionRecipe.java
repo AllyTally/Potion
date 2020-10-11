@@ -4,13 +4,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
 import net.minecraft.server.v1_16_R2.PotionRegistry;
 
-public class PotionRecipe {
+public class PotionRecipe implements java.io.Serializable {
     public boolean canUpgrade;
     public boolean canExtend;
     public boolean canSplash;
     public boolean canLingering;
     public Material inputItem;
-    public PotionRegistry inputPotions;
+    public String inputPotions;
     public ItemStack outputPotion;
     public String splashName;
     public String lingeringName;
@@ -18,7 +18,22 @@ public class PotionRecipe {
     public int extendedTime;
     public int upgradeAmount;
 
-    public PotionRecipe(String id, Material inputItem, PotionRegistry inputPotions, ItemStack outputPotion) {
+    public PotionRecipe(String id, Material inputItem, String inputPotions, ItemStack outputPotion, boolean canExtend, boolean canUpgrade, boolean canSplash, boolean canLingering, int extendedTime, int upgradeAmount, String splashName, String lingeringName) {
+        this.canExtend = canExtend;
+        this.canUpgrade = canUpgrade;
+        this.canSplash = canSplash;
+        this.canLingering = canLingering;
+        this.extendedTime = extendedTime;
+        this.upgradeAmount = upgradeAmount;
+        this.id = id;
+        this.inputItem = inputItem;
+        this.inputPotions = inputPotions;
+        this.outputPotion = outputPotion;
+        this.splashName = splashName;
+        this.lingeringName = lingeringName;
+    }
+
+    public PotionRecipe(String id, Material inputItem, String inputPotions, ItemStack outputPotion) {
         canExtend = true;
         canUpgrade = true;
         canSplash = true;
