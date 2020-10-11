@@ -75,8 +75,6 @@ public class Handler implements Listener {
             (ingredientType == Material.GLOWSTONE_DUST) ||
             (ingredientType == Material.GUNPOWDER) ||
             (ingredientType == Material.DRAGON_BREATH)) {
-            block.getWorld().playEffect(block.getLocation(), Effect.BREWING_STAND_BREW, null);
-            inv.getIngredient().setAmount(inv.getIngredient().getAmount() - 1);
             e.setCancelled(true); // Don't bother letting the game handle potions
             for (int i = 0; i < 3; i++) {
                 ItemStack input = inv.getItem(i);
@@ -148,6 +146,8 @@ public class Handler implements Listener {
                     );
                 }
             }
+            block.getWorld().playEffect(block.getLocation(), Effect.BREWING_STAND_BREW, null);
+            inv.getIngredient().setAmount(inv.getIngredient().getAmount() - 1);
         }
     }
 }
