@@ -1,6 +1,7 @@
 package space.leo60228.potion;
 
 import net.minecraft.server.v1_16_R2.PotionBrewer;
+import net.minecraft.server.v1_16_R2.Potions;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_16_R2.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
@@ -50,9 +51,25 @@ public class Handler implements Listener {
                         continue;
                     ItemStack copyOutput = Recipe.outputPotion.clone();
                     ItemMeta outputMeta = copyOutput.getItemMeta();
+                    if (input.getType() == Material.SPLASH_POTION) {
+                        copyOutput.setType(Material.SPLASH_POTION);
+                        if (Recipe.splashName != null) {
+                            outputMeta.setDisplayName(ChatColor.RESET + Recipe.splashName);
+                        }
+                    }
+                    if (input.getType() == Material.LINGERING_POTION) {
+                        copyOutput.setType(Material.LINGERING_POTION);
+                        if (Recipe.lingeringName != null) {
+                            outputMeta.setDisplayName(ChatColor.RESET + Recipe.lingeringName);
+                        }
+                    }
                     PersistentDataContainer container = outputMeta.getPersistentDataContainer();
                     NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotionId");
                     container.set(key, PersistentDataType.STRING,Recipe.id);
+                    NamespacedKey key2 = new NamespacedKey(Potion.getInstance(), "upgraded");
+                    container.set(key2, PersistentDataType.INTEGER,0);
+                    NamespacedKey key3 = new NamespacedKey(Potion.getInstance(), "extended");
+                    container.set(key3, PersistentDataType.INTEGER,0);
                     copyOutput.setItemMeta(outputMeta);
                     inv.setItem(i, copyOutput);
                 }
@@ -82,6 +99,8 @@ public class Handler implements Listener {
                 ItemMeta inputMeta = input.getItemMeta();
                 PersistentDataContainer container = inputMeta.getPersistentDataContainer();
                 NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotionId");
+                NamespacedKey key2 = new NamespacedKey(Potion.getInstance(), "upgraded");
+                NamespacedKey key3 = new NamespacedKey(Potion.getInstance(), "extended");
                 for (PotionRecipe Recipe : Recipes) {
                     //if (input.equals(Recipe.outputPotion)) { // This is the result of a custom potion.
                     //    System.out.println("handling custom potion");
@@ -94,6 +113,45 @@ public class Handler implements Listener {
                         if (ingredientType == Material.DRAGON_BREATH && !Recipe.canLingering) continue;
                         if (ingredientType == Material.DRAGON_BREATH && input.getType() != Material.SPLASH_POTION)
                             continue;
+
+                        if (ingredientType == Material.REDSTONE) {
+                            if (!container.has(key3, PersistentDataType.INTEGER) || container.get(key3, PersistentDataType.INTEGER) == 0) {
+                                ItemStack modifiedPotion = input.clone();
+                                PotionMeta outputMeta = (PotionMeta) modifiedPotion.getItemMeta();
+                                PotionMeta oldMeta = outputMeta.clone();
+                                if (outputMeta.hasCustomEffects()) {
+                                    outputMeta.clearCustomEffects();
+                                    for (PotionEffect effect : oldMeta.getCustomEffects()) {
+                                        System.out.println("extending effect");
+                                        PotionEffect newEffect = new PotionEffect(effect.getType(), Recipe.extendedTime, effect.getAmplifier());
+                                        outputMeta.addCustomEffect(newEffect, true);
+                                    }
+                                }
+                                PersistentDataContainer container2 = outputMeta.getPersistentDataContainer();
+                                container2.set(key2, PersistentDataType.INTEGER,1);
+                                modifiedPotion.setItemMeta(outputMeta);
+                                inv.setItem(i, modifiedPotion);
+                            }
+                        }
+
+                        if (ingredientType == Material.GLOWSTONE_DUST) {
+                            if (!container.has(key2, PersistentDataType.INTEGER) || container.get(key2, PersistentDataType.INTEGER) == 0) {
+                                ItemStack modifiedPotion = input.clone();
+                                PotionMeta outputMeta = (PotionMeta) modifiedPotion.getItemMeta();
+                                PotionMeta oldMeta = outputMeta.clone();
+                                if (outputMeta.hasCustomEffects()) {
+                                    outputMeta.clearCustomEffects();
+                                    for (PotionEffect effect : oldMeta.getCustomEffects()) {
+                                        PotionEffect newEffect = new PotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier() + Recipe.upgradeAmount);
+                                        outputMeta.addCustomEffect(newEffect, true);
+                                    }
+                                }
+                                PersistentDataContainer container2 = outputMeta.getPersistentDataContainer();
+                                container2.set(key2, PersistentDataType.INTEGER,1);
+                                modifiedPotion.setItemMeta(outputMeta);
+                                inv.setItem(i, modifiedPotion);
+                            }
+                        }
 
                         if (ingredientType == Material.GUNPOWDER) {
                             ItemStack modifiedPotion = input.clone();

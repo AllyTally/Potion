@@ -52,6 +52,19 @@ public class Potion extends JavaPlugin {
         Recipes.add(potion2);
     }
 
+    public void registerPotion(PotionRecipe Recipe) {
+        try {
+            Item inputItem = CraftItemStack.asNMSCopy(new ItemStack(Recipe.inputItem)).getItem();
+            Method addPotion = PotionBrewer.class.getDeclaredMethod("a", PotionRegistry.class, Item.class,
+                    PotionRegistry.class);
+            addPotion.setAccessible(true);
+            addPotion.invoke(null, Recipe.inputPotions, inputItem, Potions.EMPTY);
+        } catch (Exception e) {
+            System.out.println(e);
+            return;
+        }
+    }
+
     @Override
     public void onLoad() {
         instance = this;
@@ -59,18 +72,27 @@ public class Potion extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Fill the Recipes list
         loadRecipes();
+
+        // Add redstone and glowstone recipes. Note that gunpowder and dragons breath recipes already
+        // exist by default, so they don't need to be added.
+        try {
+            Item inputItem1 = CraftItemStack.asNMSCopy(new ItemStack(Material.REDSTONE)).getItem();
+            Item inputItem2 = CraftItemStack.asNMSCopy(new ItemStack(Material.GLOWSTONE_DUST)).getItem();
+            Method addPotion = PotionBrewer.class.getDeclaredMethod("a", PotionRegistry.class, Item.class,
+                    PotionRegistry.class);
+            addPotion.setAccessible(true);
+            addPotion.invoke(null, Potions.EMPTY, inputItem1, Potions.EMPTY);
+            addPotion.invoke(null, Potions.EMPTY, inputItem2, Potions.EMPTY);
+        } catch (Exception e) {
+            System.out.println(e);
+            return;
+        }
+
+        // Add all recipes in the Recipes list
         for (PotionRecipe Recipe : Recipes) {
-            try {
-                Item inputItem = CraftItemStack.asNMSCopy(new ItemStack(Recipe.inputItem)).getItem();
-                Method addPotion = PotionBrewer.class.getDeclaredMethod("a", PotionRegistry.class, Item.class,
-                        PotionRegistry.class);
-                addPotion.setAccessible(true);
-                addPotion.invoke(null, Recipe.inputPotions, inputItem, Potions.EMPTY);
-            } catch (Exception e) {
-                System.out.println(e);
-                return;
-            }
+            registerPotion(Recipe);
         }
         getServer().getPluginManager().registerEvents(new Handler(), this);
     }

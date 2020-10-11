@@ -15,12 +15,16 @@ public class PotionRecipe {
     public String splashName;
     public String lingeringName;
     public String id;
+    public int extendedTime;
+    public int upgradeAmount;
 
     public PotionRecipe(String id, Material inputItem, PotionRegistry inputPotions, ItemStack outputPotion) {
         canExtend = true;
         canUpgrade = true;
         canSplash = true;
         canLingering = true;
+        extendedTime = 8 * 60 * 20;
+        upgradeAmount = 1;
         this.id = id;
         this.inputItem = inputItem;
         this.inputPotions = inputPotions;
@@ -39,4 +43,6 @@ public class PotionRecipe {
     }
     public void setSplashName(String splashName) { this.splashName = splashName; }
     public void setLingeringName(String lingeringName) { this.lingeringName = lingeringName; }
+    public void setUpgradeAmount(int upgradeAmount) { this.upgradeAmount = upgradeAmount; }
+    public void setExtendedTime(int extendedTime) { this.extendedTime = extendedTime; }
 }
