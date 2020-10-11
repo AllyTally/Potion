@@ -34,7 +34,7 @@ public class Potion extends JavaPlugin {
         outputMeta.addCustomEffect(effect, true);
         outputMeta.setDisplayName(ChatColor.RESET + "Potion of Haste");
         outputPotion.setItemMeta(outputMeta);
-        PotionRecipe potion = new PotionRecipe(Material.DIAMOND, Potions.WATER, outputPotion);
+        PotionRecipe potion = new PotionRecipe("haste_potion", Material.DIAMOND, Potions.WATER, outputPotion);
         potion.setSplashName("Splash Potion of Haste");
         potion.setLingeringName("Lingering Potion of Haste");
         Recipes.add(potion);
@@ -46,7 +46,7 @@ public class Potion extends JavaPlugin {
         outputMeta2.addCustomEffect(effect2, true);
         outputMeta2.setDisplayName(ChatColor.RESET + "Potion of SEX");
         outputPotion2.setItemMeta(outputMeta2);
-        PotionRecipe potion2 = new PotionRecipe(Material.SLIME_BALL, Potions.WATER, outputPotion2);
+        PotionRecipe potion2 = new PotionRecipe("sex_potion", Material.SLIME_BALL, Potions.WATER, outputPotion2);
         potion2.setSplashName("Splash Potion of SEX");
         potion2.setLingeringName("Lingering Potion of SEX");
         Recipes.add(potion2);

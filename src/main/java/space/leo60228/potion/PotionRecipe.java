@@ -12,14 +12,16 @@ public class PotionRecipe {
     public Material inputItem;
     public PotionRegistry inputPotions;
     public ItemStack outputPotion;
-    String splashName;
-    String lingeringName;
+    public String splashName;
+    public String lingeringName;
+    public String id;
 
-    public PotionRecipe(Material inputItem, PotionRegistry inputPotions, ItemStack outputPotion) {
+    public PotionRecipe(String id, Material inputItem, PotionRegistry inputPotions, ItemStack outputPotion) {
         canExtend = true;
         canUpgrade = true;
         canSplash = true;
         canLingering = true;
+        this.id = id;
         this.inputItem = inputItem;
         this.inputPotions = inputPotions;
         this.outputPotion = outputPotion;

@@ -48,14 +48,13 @@ public class Handler implements Listener {
                     ItemStack input = inv.getItem(i);
                     if (input == null || input.getType() == Material.AIR)
                         continue;
-                    /*ItemStack copyOutput = Recipe.outputPotion.clone();
+                    ItemStack copyOutput = Recipe.outputPotion.clone();
                     ItemMeta outputMeta = copyOutput.getItemMeta();
                     PersistentDataContainer container = outputMeta.getPersistentDataContainer();
-                    NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotion");
-                    container.set(key, PersistentDataType.INTEGER,1);
+                    NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotionId");
+                    container.set(key, PersistentDataType.STRING,Recipe.id);
                     copyOutput.setItemMeta(outputMeta);
-                    inv.setItem(i, copyOutput);*/
-                    inv.setItem(i, Recipe.outputPotion);
+                    inv.setItem(i, copyOutput);
                 }
             }
         }
@@ -81,18 +80,19 @@ public class Handler implements Listener {
                 boolean customPotion = false;
                 if (input == null || input.getType() == Material.AIR) continue;
                 ItemMeta inputMeta = input.getItemMeta();
-                /*PersistentDataContainer container = inputMeta.getPersistentDataContainer();
-                NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotion");*/
+                PersistentDataContainer container = inputMeta.getPersistentDataContainer();
+                NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotionId");
                 for (PotionRecipe Recipe : Recipes) {
-                    if (input.equals(Recipe.outputPotion)) { // This is the result of a custom potion.
+                    //if (input.equals(Recipe.outputPotion)) { // This is the result of a custom potion.
+                    //    System.out.println("handling custom potion");
+                    if (container.has(key, PersistentDataType.STRING) && container.get(key, PersistentDataType.STRING).equals(Recipe.id)) {// This is the result of a custom potion.
                         System.out.println("handling custom potion");
-                    //if (container.has(key, PersistentDataType.INTEGER)) {
                         customPotion = true;
                         if (ingredientType == Material.REDSTONE && !Recipe.canExtend) continue;
                         if (ingredientType == Material.GLOWSTONE_DUST && !Recipe.canUpgrade) continue;
                         if (ingredientType == Material.GUNPOWDER && !Recipe.canSplash) continue;
                         if (ingredientType == Material.DRAGON_BREATH && !Recipe.canLingering) continue;
-                        if (ingredientType == Material.DRAGON_BREATH && Recipe.outputPotion.getType() != Material.SPLASH_POTION)
+                        if (ingredientType == Material.DRAGON_BREATH && input.getType() != Material.SPLASH_POTION)
                             continue;
 
                         if (ingredientType == Material.GUNPOWDER) {
