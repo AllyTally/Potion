@@ -56,12 +56,13 @@ public class Handler implements Listener {
                         if (Recipe.splashName != null) {
                             outputMeta.setDisplayName(ChatColor.RESET + Recipe.splashName);
                         }
-                    }
-                    if (input.getType() == Material.LINGERING_POTION) {
+                    } else if (input.getType() == Material.LINGERING_POTION) {
                         copyOutput.setType(Material.LINGERING_POTION);
                         if (Recipe.lingeringName != null) {
                             outputMeta.setDisplayName(ChatColor.RESET + Recipe.lingeringName);
                         }
+                    } else {
+                        outputMeta.setDisplayName(ChatColor.RESET + Recipe.potionName);
                     }
                     PersistentDataContainer container = outputMeta.getPersistentDataContainer();
                     NamespacedKey key = new NamespacedKey(Potion.getInstance(), "customPotionId");
@@ -75,6 +76,7 @@ public class Handler implements Listener {
                 }
             }
         }
+        if (inv.getIngredient() == null) return;
 
         /*ItemStack itemstack = inv.getItem(3);
 

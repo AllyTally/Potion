@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,7 @@ import net.minecraft.server.v1_16_R2.PotionBrewer;
 import net.minecraft.server.v1_16_R2.Potions;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import space.leo60228.potion.PotionRecipe;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +33,7 @@ public class Potion extends JavaPlugin {
         return instance;
     }
 
-    public void loadRecipes() {
+    /*public void loadRecipes() {
         ItemStack outputPotion = new ItemStack(Material.POTION);
         PotionMeta outputMeta = (PotionMeta) outputPotion.getItemMeta();
         outputMeta.setColor(Color.YELLOW);
@@ -55,15 +57,15 @@ public class Potion extends JavaPlugin {
         potion2.setSplashName("Splash Potion of SEX");
         potion2.setLingeringName("Lingering Potion of SEX");
         Recipes.add(potion2);
-    }
+    }*/
 
-    /*public void loadRecipes() {
+    public void loadRecipes() {
         File file = new File(getDataFolder(), "potions.yml");
         if (file.exists()) {
             Configuration config = YamlConfiguration.loadConfiguration(file);
             Recipes = (ArrayList<PotionRecipe>) config.getList("potions");
         }
-    }*/
+    }
 
     public void saveRecipes() throws IOException {
         File file = new File(getDataFolder(), "potions.yml");
@@ -92,6 +94,9 @@ public class Potion extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        ConfigurationSerialization.registerClass(PotionRecipe.class);
+
         // Fill the Recipes list
         loadRecipes();
 
@@ -117,7 +122,7 @@ public class Potion extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Handler(), this);
     }
 
-    @Override
+    /*@Override
     public void onDisable() {
         System.out.println("[Potion] attempting to save potions...");
         try {
@@ -129,6 +134,5 @@ public class Potion extends JavaPlugin {
             System.out.println(e);
             return;
         }
-
-    }
+    }*/
 }
